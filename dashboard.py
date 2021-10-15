@@ -23,7 +23,7 @@ import streamlit.components.v1 as components
 @st.cache
 def load_data():
     df_vacc = pd.read_csv('data/owid-covid-data.csv')
-    df_vacc = df_vacc[['location', 'date',
+    df_vacc = df_vacc[['iso_code', 'location', 'date',
                        'new_vaccinations_smoothed_per_million']
     ].rename({'new_vaccinations_smoothed_per_million': 'vaccines'}).fillna(0)
 
@@ -39,17 +39,17 @@ def load_data():
 st.title('Misinformation versus Vaccine Uptake - V1')
 df_vacc, df_miss = load_data()
 
-st.subheader('Misinformation hotspots')
+# st.subheader('Misinformation hotspots')
 df_miss_countries = df_miss.groupby(['date','location']).count(
     ).reset_index()
 
-st.write('Dataset')
-if st.checkbox('show data for misinformation'):
-    st.table(df_miss_countries.sample(10))
-if st.checkbox('show data for vaccines'):
-    st.table(df_vacc.sample(10))
+# st.write('Dataset')
+# if st.checkbox('show data for misinformation'):
+#     st.table(df_miss_countries.sample(10))
+# if st.checkbox('show data for vaccines'):
+#     st.table(df_vacc.sample(10))
 
-st.write('Maps')
+st.subheader('Map - Vaccination rates')
 st.write('Too see further: https://plotly.com/python/choropleth-maps/')
 # assign mp to the geojson data
 with open("data/countries.json", "r") as geo:
@@ -57,17 +57,17 @@ with open("data/countries.json", "r") as geo:
 
 # st.write(df_miss_countries["location"])
 # st.write(mp["features"][0]["properties"])
-df_vacc_no_date = df_vacc.groupby('location').sum().reset_index()
-fig = px.choropleth(df_vacc_no_date,
-                    locations="location",
-                    geojson=mp,
-                    featureidkey="properties.ADMIN",
+df_vaccdf_vacc_no_date = df_vacc.groupby('iso_code').sum().reset_index()
+fig = px.choropleth(df_vacc,
+                    locations="iso_code",
+                    # geojson=mp,
+                    # featureidkey="properties.ADMIN",
                     color="new_vaccinations_smoothed_per_million",
                     color_continuous_scale="Viridis",
-                    # animation_frame="date",
+                    animation_frame="date",
                     scope='world',
                     labels={'new_vaccinations_smoothed_per_million': 'Vaccines'},
-                    title='<b>Vacciens around the world</b>',
+                    title='<b>Vaccines around the world</b>',
                     # hover_name='province',
                     # hover_data={
                     #     'cases' : True,
@@ -82,18 +82,36 @@ fig = px.choropleth(df_vacc_no_date,
 
 st.plotly_chart(fig)
 
+st.subheader('Map - Misinformation hotspots')
 st.write('Too see further: https://plotly.com/python/bubble-maps/')
-df_miss_countries_no_date = df_miss_countries.groupby('location').sum().reset_index()
-st.write(df_miss_countries_no_date)
-st.write(df_miss_countries.shape)
-fig = px.scatter_geo(df_miss_countries_no_date,
-                    locations="location",
-                    geojson=mp,
-                    featureidkey="properties.ADMIN",
+
+df_iso = pd.read_csv('data/wikipedia-iso-country-codes.csv'
+                     ).set_index('English short name lower case')
+
+# clean names that don't have iso
+df_miss = df_miss[~df_miss['location'].isin(
+    [ 'Europe', 'Asia', 'Middle East', 'North Africa', 'Africa',
+     'North America', '', 'West Africa', 'East Africa',
+      'Turkish Republic of Northern Cyprus', 'Sir Lanka',
+      'Ivory Coast', 'Tanzania']
+)]
+
+df_miss['iso'] = df_iso.loc[df_miss['location'].values]['Alpha-3 code'].values
+
+df_miss_countries = df_miss.groupby(['date','iso']).count(
+    ).reset_index()
+
+df_miss_countries_no_date = df_miss_countries.groupby('iso').sum().reset_index()
+# st.write(df_miss_countries)
+# st.write(df_miss_countries.shape)
+fig = px.scatter_geo(df_miss_countries,
+                    locations="iso",
+                    # geojson=mp,
+                    # featureidkey="properties.ADMIN",
                     color="rating",
                     color_continuous_scale="Viridis",
-                    # animation_frame="date",
-                    hover_name="location", size="rating",
+                    animation_frame="date",
+                    hover_name="iso", size="rating",
                     labels={'rating': 'Misinformation'},
                     title='<b>Misinformation around the world</b>',
                     # hover_data={
@@ -108,17 +126,8 @@ fig = px.scatter_geo(df_miss_countries_no_date,
 # fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 st.plotly_chart(fig)
 
-df = px.data.gapminder()
-st.write(df.shape)
-fig = px.scatter_geo(df, locations="iso_alpha", color="continent",
-                     hover_name="country", size="pop",
-                     animation_frame="year",
-                     projection="natural earth")
-
-st.plotly_chart(fig)
 
 
-st.write('Need to fix country names manually :(')
 
 #
 st.subheader('Misinformation over time in select countries')

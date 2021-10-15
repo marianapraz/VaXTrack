@@ -3,16 +3,12 @@ import json
 
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num
-import numpy as np
 import pandas as pd
-from pandas_profiling import ProfileReport
+# from pandas_profiling import ProfileReport
 import seaborn as sns
 import plotly.figure_factory as ff
 import plotly_express as px
-import numpy as np
 import datetime
-import folium
-from streamlit_folium import folium_static
 
 
 import streamlit as st

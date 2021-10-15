@@ -48,8 +48,8 @@ df_miss_countries = df_miss.groupby(['date','location']).count(
 st.subheader('Map - Vaccination rates')
 st.write('Too see further: https://plotly.com/python/choropleth-maps/')
 # assign mp to the geojson data
-with open("data/countries.json", "r") as geo:
-    mp = json.load(geo)
+# with open("data/countries.json", "r") as geo:
+#     mp = json.load(geo)
 
 # st.write(df_miss_countries["location"])
 # st.write(mp["features"][0]["properties"])

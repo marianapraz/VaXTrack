@@ -5,6 +5,16 @@ import base64
 import streamlit as st
 from pages import main_page, about_page
 
+
+st.set_page_config(
+    page_title="Ex-stream-ly Cool App",
+    page_icon="https://upload.wikimedia.org/wikipedia/commons/a/ab"
+               "/Logo_TV_2015.png",
+    layout="wide",
+    initial_sidebar_state="expanded"
+
+ )
+
 st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/a/ab"
                "/Logo_TV_2015.png")
 

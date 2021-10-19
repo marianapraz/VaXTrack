@@ -2,11 +2,14 @@ import streamlit as st
 import plotly_express as px
 from dataloaders import load_vacc_data, load_miss_data
 
-def about():
+
+def about_page():
     st.title('About')
 
     col1, col2, col3 = st.columns(3)
-    col1.image('https://icons-for-free.com/iconfiles/png/512/person-1324760545186718018.png')
+    col1.image('data/mariana.jpeg')
+    col1.markdown('### Mariana Prazeres')
+    col1.markdown(' Data Visualization | [LinkedIn](https://www.linkedin.com/in/mprazeres/)')
     col2.image('https://icons-for-free.com/iconfiles/png/512/person'
            '-1324760545186718018.png')
     col3.image('https://icons-for-free.com/iconfiles/png/512/person'
@@ -19,6 +22,7 @@ def about():
                '-1324760545186718018.png')
     col3.image('https://icons-for-free.com/iconfiles/png/512/person'
                '-1324760545186718018.png')
+
 
 
 

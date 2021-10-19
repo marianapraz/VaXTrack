@@ -41,8 +41,8 @@ def main_page():
     st.write('blablabla')
     # DOCS: https://plotly.com/python/bubble-maps/
     _, df_miss_weekly = load_miss_data()
+
     color_schema = px.colors.diverging.curl#px.colors.sequential.Viridis
-    #px.colors.qualitative.Pastel
     # ['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786',
     #                 '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921']
 

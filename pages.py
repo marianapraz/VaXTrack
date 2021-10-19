@@ -41,7 +41,8 @@ def main_page():
     st.write('blablabla')
     # DOCS: https://plotly.com/python/bubble-maps/
     _, df_miss_weekly = load_miss_data()
-    color_schema = px.colors.qualitative.Pastel
+    color_schema = px.colors.diverging.curl#px.colors.sequential.Viridis
+    #px.colors.qualitative.Pastel
     # ['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786',
     #                 '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921']
 
@@ -80,7 +81,8 @@ def main_page():
     st.write('blablabla')
     # DOCS: https://plotly.com/python/choropleth-maps/
     _, df_vacc_weekly = load_vacc_data()
-    color_schema = px.colors.sequential.RdPu
+    color_schema = px.colors.diverging.curl#px.colors.sequential.Viridis
+    # #px.colors.sequential.RdPu
     # color_schema = ["#f197e1", "#ed77d8", "#e958cf", "#e538c6", "#dd1cba",
     #               "#bd18a0", "#9d1485", "#7e106a", "#5e0c50", "#3f0835"]
 
@@ -121,16 +123,15 @@ def main_page():
     with col2:
         selected = st.checkbox('Overlay misinformation data.')
 
-    with col1:
-        if selected:
-            fig_vacc.add_trace(fig_miss.data[0])
-            for i, frame in enumerate(fig_vacc.frames):
-                try:
-                    fig_vacc.frames[i].data += (fig_miss.frames[i].data[0], )
-                except:
-                    pass
-            fig_vacc.update_layout(hovermode='x')
-        st.plotly_chart(fig_vacc)
+    if selected:
+        fig_vacc.add_trace(fig_miss.data[0])
+        for i, frame in enumerate(fig_vacc.frames):
+            try:
+                fig_vacc.frames[i].data += (fig_miss.frames[i].data[0], )
+            except:
+                pass
+        fig_vacc.update_layout(hovermode='x')
+    st.plotly_chart(fig_vacc)
 
     st.header('Misinformation over time by country')
     df_vacc, _ = load_vacc_data()
@@ -139,7 +140,8 @@ def main_page():
     countries = list(df_vacc['location'].drop_duplicates().values)
     locs = st.multiselect("Choose countries", list(countries),
                           ['United Kingdom', 'Portugal'])
-    color_schema = px.colors.qualitative.Pastel
+    color_schema = px.colors.diverging.curl# px.colors.sequential.Viridis#px
+    # .colors.qualitative.Pastel
     # ['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786',
     #                 '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921']
 

@@ -42,15 +42,29 @@ def about_page():
 
 
 def main_page():
-    st.title('Misinformation versus Vaccine Uptake')
+    st.title('Exploring the impact of misinformation on global vaccine uptake')
+    st.markdown("""
+          
+             
+                <h4> <i>[an] overabundance 
+             of information - some accurate and some not - [...] occurs 
+             during an epidemic. It can lead to confusion and ultimately 
+             mistrust in governments and public health response.</i>
+                <div style="text-align: right">  WHO 2021 </div></h4>
+                
+                
+           
 
-    st.header('Introduction')
-    st.write('Misinformation on the Covid vaccine has been circulating on the '
-             'internet and especially on social media since the start of its '
-             'rollout in December 2020. Although by now vaccines have been offered '
-             'to entire populations in many countries, uptake has stagnated in '
-             'different regions and among different demographics across various '
-             'countries.')
+                """, unsafe_allow_html=True)
+    st.markdown(""" Understanding the factors that lead to different rates of vaccine 
+            uptake is crucial to improve vaccination programmes not only for 
+            the COVID vaccine, but also for future vaccine rollouts. 
+            Overcoming vaccine hesitancy and misinformation is of paramount 
+            importance for successful vaccination programmes. The 
+            socio-economic impact of effective vaccination coverage cannot 
+            be overstated. For example, in the absence of vaccine hesitancy, 
+            236-305 covid-related deaths per million population can be prevented 
+            (Mesa et al. 2021).""")
 
     # SECTION 1
     st.header('Hotspots of Misinformation')

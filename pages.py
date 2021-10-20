@@ -6,7 +6,6 @@ from dataloaders import load_vacc_data, load_miss_data
 def about_page():
     st.title('About')
 
-
     col1, col2, col3 = st.columns(3)
     col1.image('data/aizaan.jpg')
     col1.markdown('### Aizaan Anwar')
@@ -18,11 +17,11 @@ def about_page():
         ' EDA and Time Series Modeling & Forecasting'
         ' | [LinkedIn](https://www.linkedin.com/in/annewullenweber/)')
 
-    col3.image('https://icons-for-free.com/iconfiles/png/512/person'
-           '-1324760545186718018.png')
+    col3.image('data/cori.JPG')
     col3.markdown('### Cori Campbell')
     col3.markdown(
-        ' TBD | [LinkedIn](linked.com)')
+        'Data Wrangling and EDA | '
+        '[LinkedIn](https://uk.linkedin.com/in/cori-campbell-550bb7222)')
 
     col1, col2, col3 = st.columns(3)
     col1.image('data/mariana.jpeg')
@@ -53,15 +52,17 @@ def main_page():
              'different regions and among different demographics across various '
              'countries.')
 
+    # SECTION 1
     st.header('Hotspots of Misinformation')
-    st.write('blablabla')
-    # DOCS: https://plotly.com/python/bubble-maps/
-    _, df_miss_weekly = load_miss_data()
 
-    color_schema = px.colors.diverging.curl#px.colors.sequential.Viridis
-    # ['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786',
-    #                 '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921']
-    st.write(df_miss_weekly)
+    st.write('blablabla')
+
+    # map plot for misinformation
+    _, df_miss_weekly = load_miss_data()
+    # st.write(df_miss_weekly) # Uncomment to see dataset
+
+    # DOCS: https://plotly.com/python/bubble-maps/
+    color_schema = px.colors.diverging.curl
     fig_miss = px.scatter_geo(
         df_miss_weekly,
         locations="iso",
@@ -70,39 +71,47 @@ def main_page():
         animation_frame="week",
         hover_name="countries",
         size="rating",
-        labels={'rating': 'Misinformation'},
+        labels={'rating': 'Fake news discovered'},
         scope='world',
         title='<b>Misinformation around the world</b>',
         hover_data={
-            'iso': True,
-            'week': False
+            'iso': False,
+            'week': True,
+            'rating': True
         },
         range_color=(0, 15),
         height=500,
         width=700,
         projection="equirectangular",  #orthographic"
     )
-    # fit to area of interest
+    # customizations
     fig_miss.update_geos(fitbounds=False, visible=True)
     fig_miss.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     fig_miss["layout"].pop("updatemenus")
     fig_miss.update_layout(coloraxis_showscale=False)
-    # fig_miss.update_traces(hovertemplate=None)
+    # plot it
     st.plotly_chart(fig_miss)
 
+    # SECTION 2
     st.header('Topics of Misinformation')
+
     st.write('blablabla')
+
     st.image('data/wordcloud.png')
 
+    # SECTION 3
     st.header('Vaccination Uptake Map')
+
     st.write('blablabla')
-    # DOCS: https://plotly.com/python/choropleth-maps/
+
+    # map plot for vaccine uptake than can be overlayed with the previous
+    # misinformation map plot
     _, df_vacc_weekly = load_vacc_data()
-    color_schema = px.colors.diverging.curl#px.colors.sequential.Viridis
-    # #px.colors.sequential.RdPu
-    # color_schema = ["#f197e1", "#ed77d8", "#e958cf", "#e538c6", "#dd1cba",
-    #               "#bd18a0", "#9d1485", "#7e106a", "#5e0c50", "#3f0835"]
-    st.write(df_vacc_weekly)
+    # st.write(df_vacc_weekly) # uncomment to see data
+
+    # DOCS: https://plotly.com/python/choropleth-maps/
+    color_schema = px.colors.diverging.curl[:6] # pick only the greens
+    color_schema.reverse()
     fig_vacc = px.choropleth(
         df_vacc_weekly,
         locations="iso_code",
@@ -110,36 +119,38 @@ def main_page():
         color_continuous_scale=color_schema,
         animation_frame="week",
         scope='world',
-        labels={'new_vaccinations_smoothed_per_million': 'Vaccines'},
-        title='<b>Vaccines around the world</b>',
+        labels={'new_vaccinations_smoothed_per_million': ''
+                                                         'New vaccinations '
+                                                         '<br> '
+                                              'per million'},
         range_color=(0, 50000),
         hover_name='location',
-        # hover_data={
-        #     'cases' : True,
-        #     'cartodb_id' : False
-        # },
-        height=500,
-        width=700,
-        projection="equirectangular")
+        hover_data={
+            'week': True,
+            'iso_code': False,
+            'iso': False,
+            'new_vaccinations_smoothed_per_million': True
+        },
 
-    # fit to area of interest
-    fig_vacc.update_geos(fitbounds="geojson", visible=False)
+        height=500,
+        width=900,
+        projection="equirectangular")
+    # customizations
+    # customizations
+    fig_vacc.update_geos(fitbounds=False, visible=False)
     fig_vacc.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, )
     fig_vacc["layout"].pop("updatemenus")
     fig_vacc.update_layout(coloraxis_colorbar=dict(
         thicknessmode="pixels",
-        thickness=50,
+        thickness=10,
         lenmode="pixels",
-        len=200,
-        # yanchor="top", y=1,
-        # ticks="outside",
-        # dtick=5
+        len=400,
     ))
 
+    # overlay
     col1, col2 = st.columns(2)
     with col2:
         selected = st.checkbox('Overlay misinformation data.')
-
     if selected:
         fig_vacc.add_trace(fig_miss.data[0])
         for i, frame in enumerate(fig_vacc.frames):
@@ -147,67 +158,85 @@ def main_page():
                 fig_vacc.frames[i].data += (fig_miss.frames[i].data[0], )
             except:
                 pass
-        # fig_vacc.update_layout(hovermode='x unified')
-        # fig_vacc.update_traces(hovertemplate=None)
+    # plot it
     st.plotly_chart(fig_vacc)
 
+    # SECTION 4
     st.header('Misinformation over time by country')
+
+    # Timeseries plot for vaccines versus misinformation
     df_vacc, _ = load_vacc_data()
     df_miss, _ = load_miss_data()
 
+    # Country selector
     countries = list(df_vacc['location'].drop_duplicates().values)
     locs = st.multiselect("Choose countries", list(countries),
                           ['United Kingdom', 'Portugal'])
-    color_schema = px.colors.diverging.curl# px.colors.sequential.Viridis#px
-    # .colors.qualitative.Pastel
-    # ['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786',
-    #                 '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921']
-
     df_loc = df_vacc_weekly[df_vacc_weekly['location'].isin(locs)]
-    st.write(df_loc.sort_values(['location','week']))
+    # st.write(df_loc.sort_values(['location','week'])) # uncomment to see
+    df_joined = df_miss_weekly.set_index(['week', 'iso', 'countries']).join(
+        df_vacc_weekly.set_index(['week', 'iso', 'location']), ).reset_index()
+    df_joined = df_joined[df_joined['location'].isin(locs)]
+    # st.write(df_joined.sort_values(['location','week'])) # uncomment to see
+
+    # line plot of vaccination time series
+    color_schema = ['#1C485D', '#3F9C81', '#E0A089', '#A43660']
+    # this is a partial selection of px.colors.diverging.curl
     fig_line = px.line(
         df_loc.sort_values(['location', 'week']),
         x="week",
         y="new_vaccinations_smoothed_per_million",
         color='location',
         color_discrete_sequence=color_schema,
-        title='Vaccine uptake and misinformation over time in selected '
-        'countries',
-        labels={
-            'new_vaccinations_smoothed_per_million': 'Daily '
-            'vaccinations per million',
-            'location': 'Country'
+        labels={'new_vaccinations_smoothed_per_million': ''
+                                                         'New vaccinations '
+                                                         'per million'},
+        hover_data={
+            'week': False,
+            'iso_code': False,
+            'iso': False,
+            'location': False,
+            'new_vaccinations_smoothed_per_million': True
         },
         hover_name='location')
-    # st.plotly_chart(fig_line)
+    # customizations
+    fig_line.update_traces(hovertemplate="""
+        <b>%{hovertext}</b>:  %{y} vaccines per million<extra></extra>"""
+                           )
+    # st.plotly_chart(fig_line) # uncomment to see just line plot
 
-    df_miss_loc = df_miss[df_miss['location'].isin(locs)]
-    df_miss_loc_count = df_miss_loc.groupby(['date', 'location']).count()
-
-    # st.write(df_vacc_weekly.set_index(['week','iso','location']))
-    # st.write(df_miss_weekly.set_index(['week','iso', 'countries']))
-
-    df_joined = df_miss_weekly.set_index(['week', 'iso', 'countries']).join(
-        df_vacc_weekly.set_index(['week', 'iso', 'location']), ).reset_index()
-    df_joined = df_joined[df_joined['location'].isin(locs)]
-
-    # Create quiver plot
-    st.write(df_joined.sort_values(['location','week']))
-    fig_quiver = px.scatter(df_joined.sort_values(['location', 'week']),
+    # Create scatter plot with fake news information
+    fig_scatter = px.scatter(df_joined.sort_values(['location', 'week']),
                             x="week",
                             y="new_vaccinations_smoothed_per_million",
                             size="rating",
                             color="location",
                             color_discrete_sequence=color_schema,
-                            hover_name='location')
-    fig_quiver.update_traces(marker=dict(symbol='x'))
-    fig_quiver.update_layout(showlegend=False)
-    # st.plotly_chart(fig_quiver)
+                            # hover_name='location',
+                            hover_data={
+                                'week': True,
+                                'iso_code': False,
+                                'iso': False,
+                                'countries': False,
+                                'new_vaccinations_smoothed_per_million': False,
+                                'rating': True,
+                                'location': False
+                            },
+                            labels={'rating': 'Fake news discovered'}
+                            )
+    # customizations
+    fig_scatter.update_traces(marker=dict(symbol='x'))
+    fig_scatter.update_layout(showlegend=False)
+    fig_scatter.update_traces(hovertemplate="""
+            %{customdata[3]} fake news spotted on %{x}"""
+                           )
+    # st.plotly_chart(fig_scatter) # uncomment to see just scatter plot
 
+    # Combine the two plots and plot it
     for i in range(len(locs)):
-        fig_line.add_trace(fig_quiver.data[i])
-    fig_line.update_layout(showlegend=False, hovermode='x')
-    # fig_line.update_traces(hovertemplate=None)
+        fig_line.add_trace(fig_scatter.data[i])
+    fig_line.update_layout(showlegend=False, hovermode='x unified')
     st.plotly_chart(fig_line)
 
+    # SECTION 4
     st.header('Time Series Analysis')

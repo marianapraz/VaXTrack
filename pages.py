@@ -6,24 +6,40 @@ from dataloaders import load_vacc_data, load_miss_data
 def about_page():
     st.title('About')
 
+
+    col1, col2, col3 = st.columns(3)
+    col1.image('data/aizaan.jpg')
+    col1.markdown('### Aizaan Anwar')
+    col1.markdown('Data Wrangling, EDA and Statistics | '
+                  '[LinkedIn](https://www.linkedin.com/in/aizaan)')
+    col2.image('data/Wullenweber_Anne_Foto_Original.jpg')
+    col2.markdown('### Anne Wullenweber')
+    col2.markdown(
+        ' EDA and Time Series Modeling & Forecasting'
+        ' | [LinkedIn](https://www.linkedin.com/in/annewullenweber/)')
+
+    col3.image('https://icons-for-free.com/iconfiles/png/512/person'
+           '-1324760545186718018.png')
+    col3.markdown('### Cori Campbell')
+    col3.markdown(
+        ' TBD | [LinkedIn](linked.com)')
+
     col1, col2, col3 = st.columns(3)
     col1.image('data/mariana.jpeg')
     col1.markdown('### Mariana Prazeres')
-    col1.markdown(' Data Visualization | [LinkedIn](https://www.linkedin.com/in/mprazeres/)')
-    col2.image('https://icons-for-free.com/iconfiles/png/512/person'
-           '-1324760545186718018.png')
-    col3.image('https://icons-for-free.com/iconfiles/png/512/person'
-           '-1324760545186718018.png')
-
-    col1, col2, col3 = st.columns(3)
-    col1.image(
-        'https://icons-for-free.com/iconfiles/png/512/person-1324760545186718018.png')
-    col2.image('https://icons-for-free.com/iconfiles/png/512/person'
-               '-1324760545186718018.png')
-    col3.image('https://icons-for-free.com/iconfiles/png/512/person'
-               '-1324760545186718018.png')
-
-
+    col1.markdown(
+        'EDA and Data Visualization | [LinkedIn]('
+        'https://www.linkedin.com/in/mprazeres/)')
+    col2.image('data/saran.jpeg')
+    col2.markdown('### Saran Davies')
+    col2.markdown(
+        'Data Visualisation and Graphics | [LinkedIn]('
+        'https://www.linkedin.com/in/saran-davies/)')
+    col3.image('data/Yifan_Zhang.jpg')
+    col3.markdown('### Yifan Zhang')
+    col3.markdown(
+        'Data Preparation, EDA and Time Series Modeling | [LinkedIn]('
+        'https://www.linkedin.com/in/yifan-zhang-in)')
 
 
 def main_page():
@@ -45,14 +61,14 @@ def main_page():
     color_schema = px.colors.diverging.curl#px.colors.sequential.Viridis
     # ['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786',
     #                 '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921']
-
+    st.write(df_miss_weekly)
     fig_miss = px.scatter_geo(
         df_miss_weekly,
         locations="iso",
         color="rating",
         color_continuous_scale=color_schema,
         animation_frame="week",
-        hover_name="iso",
+        hover_name="countries",
         size="rating",
         labels={'rating': 'Misinformation'},
         scope='world',
@@ -71,6 +87,7 @@ def main_page():
     fig_miss.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     fig_miss["layout"].pop("updatemenus")
     fig_miss.update_layout(coloraxis_showscale=False)
+    # fig_miss.update_traces(hovertemplate=None)
     st.plotly_chart(fig_miss)
 
     st.header('Topics of Misinformation')
@@ -85,7 +102,7 @@ def main_page():
     # #px.colors.sequential.RdPu
     # color_schema = ["#f197e1", "#ed77d8", "#e958cf", "#e538c6", "#dd1cba",
     #               "#bd18a0", "#9d1485", "#7e106a", "#5e0c50", "#3f0835"]
-
+    st.write(df_vacc_weekly)
     fig_vacc = px.choropleth(
         df_vacc_weekly,
         locations="iso_code",
@@ -96,7 +113,7 @@ def main_page():
         labels={'new_vaccinations_smoothed_per_million': 'Vaccines'},
         title='<b>Vaccines around the world</b>',
         range_color=(0, 50000),
-        # hover_name='province',
+        hover_name='location',
         # hover_data={
         #     'cases' : True,
         #     'cartodb_id' : False
@@ -130,7 +147,8 @@ def main_page():
                 fig_vacc.frames[i].data += (fig_miss.frames[i].data[0], )
             except:
                 pass
-        fig_vacc.update_layout(hovermode='x')
+        # fig_vacc.update_layout(hovermode='x unified')
+        # fig_vacc.update_traces(hovertemplate=None)
     st.plotly_chart(fig_vacc)
 
     st.header('Misinformation over time by country')
@@ -146,7 +164,7 @@ def main_page():
     #                 '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921']
 
     df_loc = df_vacc_weekly[df_vacc_weekly['location'].isin(locs)]
-    # st.write(df_loc.sort_values(['location','week']))
+    st.write(df_loc.sort_values(['location','week']))
     fig_line = px.line(
         df_loc.sort_values(['location', 'week']),
         x="week",
@@ -159,7 +177,8 @@ def main_page():
             'new_vaccinations_smoothed_per_million': 'Daily '
             'vaccinations per million',
             'location': 'Country'
-        })
+        },
+        hover_name='location')
     # st.plotly_chart(fig_line)
 
     df_miss_loc = df_miss[df_miss['location'].isin(locs)]
@@ -173,13 +192,14 @@ def main_page():
     df_joined = df_joined[df_joined['location'].isin(locs)]
 
     # Create quiver plot
-    # st.write(df_joined.sort_values(['location','week']))
+    st.write(df_joined.sort_values(['location','week']))
     fig_quiver = px.scatter(df_joined.sort_values(['location', 'week']),
                             x="week",
                             y="new_vaccinations_smoothed_per_million",
                             size="rating",
                             color="location",
-                            color_discrete_sequence=color_schema)
+                            color_discrete_sequence=color_schema,
+                            hover_name='location')
     fig_quiver.update_traces(marker=dict(symbol='x'))
     fig_quiver.update_layout(showlegend=False)
     # st.plotly_chart(fig_quiver)
@@ -187,6 +207,7 @@ def main_page():
     for i in range(len(locs)):
         fig_line.add_trace(fig_quiver.data[i])
     fig_line.update_layout(showlegend=False, hovermode='x')
+    # fig_line.update_traces(hovertemplate=None)
     st.plotly_chart(fig_line)
 
     st.header('Time Series Analysis')

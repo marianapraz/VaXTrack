@@ -67,9 +67,13 @@ def main_page():
             (Mesa et al. 2021).""")
 
     # SECTION 1
-    st.header('Hotspots of Misinformation')
+    st.header('Misinformation in COVID times')
 
-    st.write('blablabla')
+    st.markdown(''' We explore how often misinformation pops up accross 
+    the world by counting false news reported in the [The 
+    CoronaVirusFacts/DatosCoronaVirus Alliance Database](
+    https://www.poynter.org/ifcn-covid-19-misinformation/).
+    ''')
 
     # map plot for misinformation
     _, df_miss_weekly = load_miss_data()
@@ -107,16 +111,23 @@ def main_page():
     st.plotly_chart(fig_miss)
 
     # SECTION 2
-    st.header('Topics of Misinformation')
+    st.subheader('Topics of Misinformation')
 
-    st.write('blablabla')
+    st.markdown(''' We visualize which words occur in false news reported in 
+    the [The 
+        CoronaVirusFacts/DatosCoronaVirus Alliance Database](
+        https://www.poynter.org/ifcn-covid-19-misinformation/).
+        ''')
 
     st.image('data/wordcloud.png')
 
     # SECTION 3
-    st.header('Vaccination Uptake Map')
+    st.header('Vaccination Uptake and Misinformation')
 
-    st.write('blablabla')
+    st.markdown(''' We explore how weekly vaccinations change over time in 
+    several different countries. It is possible to overlay the spots of 
+    misinformation from before.
+        ''')
 
     # map plot for vaccine uptake than can be overlayed with the previous
     # misinformation map plot
@@ -147,7 +158,7 @@ def main_page():
         },
 
         height=500,
-        width=900,
+        width=800,
         projection="equirectangular")
     # customizations
     # customizations
@@ -176,7 +187,7 @@ def main_page():
     st.plotly_chart(fig_vacc)
 
     # SECTION 4
-    st.header('Misinformation over time by country')
+    # st.header('Country statistics')
 
     # Timeseries plot for vaccines versus misinformation
     df_vacc, _ = load_vacc_data()

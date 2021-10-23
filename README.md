@@ -1,6 +1,4 @@
-![image](https://user-images.githubusercontent.com/38357613/138111159-bfdbbe39-0370-4854-a1c7-421e601e231e.png)
-
-**[Landing Page](https://share.streamlit.io/marianapraz/ds4a/main/dashboard.py)**
+[![image](https://user-images.githubusercontent.com/38357613/138122157-ad7f9555-084d-4fb2-8b26-42608c1533fd.png)](https://share.streamlit.io/marianapraz/vaxtrack/main/dashboard.py)
 
 ## Run locally
 ```

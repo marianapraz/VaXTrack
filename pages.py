@@ -259,7 +259,10 @@ def main_page():
 
     # Combine the two plots and plot it
     for i in range(len(locs)):
-        fig_line.add_trace(fig_scatter.data[i])
+        try: # some countries don't have enough data
+            fig_line.add_trace(fig_scatter.data[i])
+        except:
+            pass
     fig_line.update_layout(showlegend=False, hovermode='x unified')
     st.plotly_chart(fig_line)
 
@@ -278,4 +281,3 @@ def main_page():
                 'on **day 10** and remains below the steady state for **more than one month**')
     st.markdown('**Conclusion 3:** According to our model, one fake news article leads to a **decrease**'
                 ' of the vaccine uptake by **12,909 doses**.')
-

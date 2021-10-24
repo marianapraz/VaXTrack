@@ -1,8 +1,7 @@
 """ Streamlit app for landing page"""
 
-import webbrowser
-
 import streamlit as st
+from link_button import link_button
 from pages import main_page, about_page
 
 
@@ -44,6 +43,6 @@ elif datafolio_flag:
     st.image("data/datafolio-1.png")
 elif report_flag:
     url = "https://drive.google.com/file/d/1QLk03WWv2zjC4DRB6k6tikT0fMth3muM/view?usp=sharing"
-    webbrowser.open_new_tab(url)
+    link_button('Report', url)
 else:
     main_page()

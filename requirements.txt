@@ -5,3 +5,4 @@ streamlit
 plotly
 plotly-express
 seaborn
+webbrowser

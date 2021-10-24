@@ -264,4 +264,18 @@ def main_page():
     st.plotly_chart(fig_line)
 
     # SECTION 4
-    st.header('Time Series Analysis')
+    st.header('Time Series Analysis - Main Conclusions')
+    st.subheader('Forecasting')
+    col1, col2, col3 = st.columns([1, 7, 1])
+    col2.image('data/prophet.png')
+    st.markdown('**Conclusion 1:** The **actual uptake** is **lower** than the **modeled uptake**'
+                ' after the release of a large amount of fake news.')
+    st.markdown("#")
+    st.subheader('Bayesian Vector Auto-Regression Modeling')
+    col1, col2, col3 = st.columns([1, 7, 1])
+    col2.image('data/shocks.png')
+    st.markdown('**Conclusion 2:** Following a shock in fake news, the vaccine uptake starts to **decline** '
+                'on **day 10** and remains below the steady state for **more than one month**')
+    st.markdown('**Conclusion 3:** According to our model, one fake news article leads to a **decrease**'
+                ' of the vaccine uptake by **12,909 doses**.')
+

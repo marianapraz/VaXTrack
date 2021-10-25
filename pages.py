@@ -98,8 +98,8 @@ def main_page():
             'rating': True
         },
         range_color=(0, 15),
-        height=500,
-        width=700,
+        # height=500,
+        # width=700,
         projection="equirectangular",  #orthographic"
     )
     # customizations
@@ -108,7 +108,7 @@ def main_page():
     fig_miss["layout"].pop("updatemenus")
     fig_miss.update_layout(coloraxis_showscale=False)
     # plot it
-    st.plotly_chart(fig_miss)
+    st.plotly_chart(fig_miss, use_container_width=True)
 
     # SECTION 2
     st.subheader('Topics of Misinformation')
@@ -157,8 +157,8 @@ def main_page():
             'new_vaccinations_smoothed_per_million': True
         },
 
-        height=500,
-        width=800,
+        # height=500,
+        # width=800,
         projection="equirectangular")
     # customizations
     # customizations
@@ -184,7 +184,7 @@ def main_page():
             except:
                 pass
     # plot it
-    st.plotly_chart(fig_vacc)
+    st.plotly_chart(fig_vacc, use_container_width=True)
 
     # SECTION 4
     # st.header('Country statistics')
@@ -264,7 +264,7 @@ def main_page():
         except:
             pass
     fig_line.update_layout(showlegend=False, hovermode='x unified')
-    st.plotly_chart(fig_line)
+    st.plotly_chart(fig_line, use_container_width=True)
 
     # SECTION 4
     st.header('Time Series Analysis - Main Conclusions')
